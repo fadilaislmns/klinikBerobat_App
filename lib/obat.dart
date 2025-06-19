@@ -26,7 +26,7 @@ class _ObatPageState extends State<ObatPage> {
   }
 
   Future<void> getDataObat() async {
-    String urlObat = "http://10.0.3.2/backend_project/obat.php";
+    String urlObat = "http://10.0.2.2/backend_project/obat.php";
     try {
       var response = await http.get(Uri.parse(urlObat));
       setState(() {
@@ -92,24 +92,24 @@ class _ObatPageState extends State<ObatPage> {
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              CupertinoIcons.cart,
-              size: 22,
-              color: Colors.white,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              CupertinoIcons.search,
-              size: 22,
-              color: Colors.white,
-            ),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: const Icon(
+        //       CupertinoIcons.cart,
+        //       size: 22,
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: const Icon(
+        //       CupertinoIcons.search,
+        //       size: 22,
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        // ],
       ),
       body: Center(
           child: GridView.builder(
@@ -195,34 +195,34 @@ class _ObatPageState extends State<ObatPage> {
 class DetailScreen extends StatelessWidget {
   final dynamic item;
   // final String userId;
-  // const DetailScreen({Key? key, required this.item}) : super(key: key);
-
   const DetailScreen({Key? key, required this.item}) : super(key: key);
-  Future<void> addToCart(BuildContext context) async {
-    var response = await http.post(
-      Uri.parse('http://10.0.3.2/backend_project/add_keranjang.php'),
-      body: {
-        // 'user_id': userId, // Menggunakan userId yang di-passing
-        'obat_id': item['id_obat'].toString(),
-      },
-    );
 
-    var data = jsonDecode(response.body);
-    if (data['value'] == '1') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Produk berhasil ditambahkan ke keranjang!')),
-      );
-    } else if (data['value'] == '2') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Produk sudah ada di keranjang.')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal menambahkan ke keranjang!')),
-      );
-    }
-  }
+  // const DetailScreen({Key? key, required this.item}) : super(key: key);
+  // Future<void> addToCart(BuildContext context) async {
+  //   var response = await http.post(
+  //     Uri.parse('http://10.0.3.2/backend_project/add_keranjang.php'),
+  //     body: {
+  //       // 'user_id': userId, // Menggunakan userId yang di-passing
+  //       'obat_id': item['id_obat'].toString(),
+  //     },
+  //   );
+
+  //   var data = jsonDecode(response.body);
+  //   if (data['value'] == '1') {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //           content: Text('Produk berhasil ditambahkan ke keranjang!')),
+  //     );
+  //   } else if (data['value'] == '2') {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Produk sudah ada di keranjang.')),
+  //     );
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Gagal menambahkan ke keranjang!')),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -249,32 +249,32 @@ class DetailScreen extends StatelessWidget {
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Keranjang(
-                      userId: 'userId'), // Pass the userId if needed
-                ),
-              );
-            },
-            icon: const Icon(
-              CupertinoIcons.cart,
-              size: 22,
-              color: Colors.white,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              CupertinoIcons.search,
-              size: 22,
-              color: Colors.white,
-            ),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) => const Keranjang(
+        //               userId: 'userId'), // Pass the userId if needed
+        //         ),
+        //       );
+        //     },
+          //   icon: const Icon(
+          //     CupertinoIcons.cart,
+          //     size: 22,
+          //     color: Colors.white,
+          //   ),
+          // ),
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(
+          //     CupertinoIcons.search,
+          //     size: 22,
+          //     color: Colors.white,
+          //   ),
+          // ),
+      //  ],
       ),
       body: SingleChildScrollView(
         // Make the body scrollable
@@ -286,7 +286,7 @@ class DetailScreen extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                    40, 10, 10, 0), // Reduced padding for the image
+                    70, 0, 0, 0), // Reduced padding for the image
                 child: Image.network(
                   item['image'],
                   width: 250,
@@ -400,44 +400,44 @@ class DetailScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                child: Center(
-                  child: Container(
-                    height: 55,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color.fromARGB(255, 23, 55, 184),
-                          Color(0xff281537),
-                        ],
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        //addToCart(context);  // Panggil fungsi tambah ke keranjang
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shadowColor: Colors.transparent,
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 30),
-                      ),
-                      child: const Text(
-                        'ADD TO CART',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              //   child: Center(
+              //     child: Container(
+              //       height: 55,
+              //       width: 300,
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(30),
+              //         gradient: const LinearGradient(
+              //           colors: [
+              //             Color.fromARGB(255, 23, 55, 184),
+              //             Color(0xff281537),
+              //           ],
+              //         ),
+              //       ),
+                    // child: ElevatedButton(
+                    //   onPressed: () {
+                    //     //addToCart(context);  // Panggil fungsi tambah ke keranjang
+                    //   },
+                    //   style: ElevatedButton.styleFrom(
+                    //     shadowColor: Colors.transparent,
+                    //     backgroundColor: Colors.blue,
+                    //     padding: const EdgeInsets.symmetric(
+                    //         vertical: 15, horizontal: 30),
+                    //   ),
+                      // child: const Text(
+                      //   'ADD TO CART',
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 20,
+                      //     color: Colors.white,
+                      //   ),
+                      // ),
+                   // ),
+                //  ),
+                //),
+             // ),
             ],
           ),
         ),

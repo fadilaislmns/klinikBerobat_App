@@ -35,31 +35,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
                 fontWeight: FontWeight.bold)),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Keranjang(userId: 'userId'), // Pass the userId if needed
-        ),
-      );
-            },
-            icon: const Icon(
-              CupertinoIcons.cart,
-              size: 22,
-              color: Colors.white,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              CupertinoIcons.search,
-              size: 22,
-              color: Colors.white,
-            ),
-          ),
-        ],
+        
       ),
       body: pages[currentPageIndex],
       bottomNavigationBar: BottomNavigationBar(

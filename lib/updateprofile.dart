@@ -28,7 +28,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   Future<void> editUser() async {
-    String urlEditUser = "http://10.0.3.2/backend_project/update_users.php";
+    String urlEditUser = "http://10.0.2.2/backend_project/update_users.php";
     try {
       var resEditUser = await http.post(Uri.parse(urlEditUser), body: {
         "id": _id.text,

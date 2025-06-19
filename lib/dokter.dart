@@ -20,7 +20,7 @@ class _allDoctorsState extends State<allDoctors> {
 
 
   Future<void> getDataDokter() async {
-    String urlAllDoctors = "http://10.0.3.2/backend_project/dokter.php";
+    String urlAllDoctors = "http://10.0.2.2/backend_project/dokter.php";
     try {
       var response = await http.get(Uri.parse(urlAllDoctors));
       setState(() {
@@ -36,7 +36,7 @@ class _allDoctorsState extends State<allDoctors> {
     if (searchD.isEmpty) return;
     try {
       String urlSearchDokter =
-          "http://10.0.3.2/backend_project/search_dokter.php?search=$searchD";
+          "http://10.0.2.2/backend_project/search_dokter.php?search=$searchD";
       var responseSearch = await http.get(Uri.parse(urlSearchDokter));
       final List listSearch = json.decode(responseSearch.body);
       setState(() {

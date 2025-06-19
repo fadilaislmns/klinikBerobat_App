@@ -13,23 +13,22 @@ class PageBerita extends StatefulWidget {
 class _PageBeritaState extends State<PageBerita> {
   List<dynamic> dataBerita = [];
 
- Future<void> getDataBerita() async {
-  const String urlBerita = "http://10.0.3.2/backend_project/berita.php";
-  try {
-    final response = await http.get(Uri.parse(urlBerita));
-    setState(() {
-      dataBerita = jsonDecode(response.body);
-    });
-    if (kDebugMode) {
-      print('Data Berita: $dataBerita');
-    }
-  } catch (exc) {
-    if (kDebugMode) {
-      print(exc);
+  Future<void> getDataBerita() async {
+    const String urlBerita = "http://10.0.2.2/backend_project/berita.php";
+    try {
+      final response = await http.get(Uri.parse(urlBerita));
+      setState(() {
+        dataBerita = jsonDecode(response.body);
+      });
+      if (kDebugMode) {
+        print('Data Berita: $dataBerita');
+      }
+    } catch (exc) {
+      if (kDebugMode) {
+        print(exc);
+      }
     }
   }
-}
-
 
   @override
   void initState() {
@@ -37,18 +36,17 @@ class _PageBeritaState extends State<PageBerita> {
     getDataBerita();
   }
 
-void itemDataTap(int index) {
-  final item = dataBerita[index];
-  if (kDebugMode) {
-    print('Tapped item: $item');
+  void itemDataTap(int index) {
+    final item = dataBerita[index];
+    if (kDebugMode) {
+      print('Tapped item: $item');
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => DetailScreen(item: item),
+      ),
+    );
   }
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (BuildContext context) => DetailScreen(item: item),
-    ),
-  );
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +83,13 @@ void itemDataTap(int index) {
                                 width: 80,
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                            (loadingProgress.expectedTotalBytes ?? 1)
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            (loadingProgress
+                                                    .expectedTotalBytes ??
+                                                1)
                                         : null,
                                   ),
                                 ),
@@ -99,7 +101,8 @@ void itemDataTap(int index) {
                               height: 80,
                               width: 80,
                               color: Colors.grey,
-                              child: const Icon(Icons.broken_image, color: Colors.white),
+                              child: const Icon(Icons.broken_image,
+                                  color: Colors.white),
                             );
                           },
                         ),
@@ -120,7 +123,8 @@ void itemDataTap(int index) {
                             const SizedBox(height: 5),
                             Text(
                               itemData['tgl_upload'],
-                              style: const TextStyle(fontSize: 14, color: Colors.black54),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.black54),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -138,6 +142,7 @@ void itemDataTap(int index) {
     );
   }
 }
+
 class DetailScreen extends StatelessWidget {
   final dynamic item;
   const DetailScreen({Key? key, required this.item}) : super(key: key);
@@ -149,21 +154,23 @@ class DetailScreen extends StatelessWidget {
     }
 
     // Null checks for item fields
-    final String imageUrl = item['image'] ?? ''; // Default to empty string if null
+    final String imageUrl =
+        item['image'] ?? ''; // Default to empty string if null
     // ignore: non_constant_identifier_names
     final String JudulBerita = item['judul'] ?? 'No Title Available';
     // ignore: non_constant_identifier_names
     final String DetailBerita = item['detail'] ?? 'No Description Available';
-    final String tanggalUpload = item['tgl_upload'] ?? 'No Date Available';
+    final String tanggalUpload = 'Tanggal Upload: ${item['tgl_upload'].toString()}' ?? 'No Date Available';
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 23, 55, 184),
+        
         title: const Text(
           'Detail Berita',
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 14,
+            color: Colors.white,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -174,18 +181,18 @@ class DetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-  color: Colors.red,  // Set the background color here
-  child: Text(
-    tanggalUpload,
-    style: const TextStyle(
-      fontSize: 12,
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
-
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              color: const Color.fromARGB(255, 247, 143, 135), // Set the background color here
+              child: Text(
+                tanggalUpload,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             const SizedBox(height: 10),
             Text(
               JudulBerita,

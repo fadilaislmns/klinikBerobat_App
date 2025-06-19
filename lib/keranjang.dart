@@ -25,7 +25,7 @@ class _KeranjangState extends State<Keranjang> {
   // Fetch cart items from the backend
   Future<void> fetchCartItems() async {
     final response = await http.post(
-      Uri.parse('http://10.0.3.2/backend_project/keranjang.php'),
+      Uri.parse('http://10.0.2.2/backend_project/keranjang.php'),
       body: {'user_id': widget.userId},
     );
 

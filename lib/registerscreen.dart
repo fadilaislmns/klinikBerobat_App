@@ -22,7 +22,7 @@ class _RegScreenState extends State<RegScreen> {
   Future<void> registerUser() async {
     // Validasi jika ada field yang kosong
 
-    String urlAddPasien = "http://10.0.3.2/backend_project/add_users.php";
+    String urlAddPasien = "http://10.0.2.2/backend_project/add_users.php";
     try {
       var resAddPasien = await http.post(Uri.parse(urlAddPasien), body: {
         "nama": _nama.text.toString(),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_uas_fadila/homepage.dart';
 import 'package:project_uas_fadila/riwayat.dart';
@@ -13,7 +14,7 @@ class PendaftaranPasien extends StatefulWidget {
 }
 
 class _PendaftaranPasienState extends State<PendaftaranPasien> {
-  final _user_id = TextEditingController();
+  // final _user_id = TextEditingController();
   final _tgl_konsul = TextEditingController();
   final _keluhan_pasien = TextEditingController();
   List<Map<String, dynamic>> poliData =
@@ -31,14 +32,14 @@ class _PendaftaranPasienState extends State<PendaftaranPasien> {
   // Function to get user_id from SharedPreferences
   _getUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _user_id.text = prefs.getString('user_id') ?? ''; // Retrieve user_id
-    });
+    // setState(() {
+    //   _user_id.text = prefs.getString('user_id') ?? ''; // Retrieve user_id
+    // });
   }
 
   // Function to fetch poli data from the server
   _fetchPoliData() async {
-    String url = 'http://10.0.3.2/backend_project/get_poli.php';
+    String url = 'http://10.0.2.2/backend_project/get_poli.php';
     try {
       var response = await http.get(Uri.parse(url));
       var data = json.decode(response.body);
@@ -62,46 +63,49 @@ class _PendaftaranPasienState extends State<PendaftaranPasien> {
 
   // Function to register a new consultation
   Future<void> addNewPendaftaran() async {
-  String urlNewPendaftaran = 'http://10.0.3.2/backend_project/add_konsultasi.php';
-  try {
-    var resAddPendaftaran = await http.post(
-      Uri.parse(urlNewPendaftaran),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "user_id": 8,
-        "dokter_id": selectedDoctorId.toString(),
-        "tgl_konsul": _tgl_konsul.text.toString(),
-        "keluhan_pasien": _keluhan_pasien.text.toString()
-      }),
-    );
+    String urlNewPendaftaran =
+        'http://10.0.2.2/backend_project/add_konsultasi.php';
+    dynamic user_id = await SessionManager().get("id");
+    print("user id = $user_id");
 
-    print('Response body: ${resAddPendaftaran.body}');
-    var bodyAddProduct = json.decode(resAddPendaftaran.body);
-    
-    // Ubah pengecekan ke JSON object
-    if (bodyAddProduct['success'] != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pendaftaran berhasil dilakukan')),
+    try {
+      var resAddPendaftaran = await http.post(
+        Uri.parse(urlNewPendaftaran),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "user_id": user_id,
+          "dokter_id": selectedDoctorId.toString(),
+          "tgl_konsul": _tgl_konsul.text.toString(),
+          "keluhan_pasien": _keluhan_pasien.text.toString()
+        }),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const RiwayatPage()),
-      );
-    } else {
+
+      print('Response body: ${resAddPendaftaran.body}');
+      var bodyAddProduct = json.decode(resAddPendaftaran.body);
+
+      // Ubah pengecekan ke JSON object
+      if (bodyAddProduct['success'] != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Pendaftaran berhasil dilakukan')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to Add New Konsultasi')),
+        );
+      }
+    } catch (exc) {
+      print(exc);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to Add New Konsultasi')),
+        const SnackBar(content: Text('Terjadi kesalahan, coba lagi')),
       );
     }
-  } catch (exc) {
-    print(exc);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Terjadi kesalahan, coba lagi')),
-    );
   }
-}
-
 
   @override
   Widget build(BuildContext context) {

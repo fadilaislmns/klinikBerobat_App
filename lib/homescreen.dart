@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getAllDokter() async {
-    String urlAllDokter = "http://10.0.3.2/backend_project/dokter.php";
+    String urlAllDokter = "http://10.0.2.2/backend_project/dokter.php";
     try {
       var response = await http.get(Uri.parse(urlAllDokter));
       if (response.statusCode == 200) {
@@ -92,32 +92,51 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: 'Apa keluhan anda?',
-                prefixIcon: const Icon(Icons.search, size: 20),
-                suffixIcon: const Icon(Icons.filter_list, size: 20),
-                filled: true,
-                fillColor: Colors.grey.shade300,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
             SizedBox(
               height: 150,
-              child: PageView.builder(
-                controller: bannerController,
-                itemCount: bannerList.length,
-                itemBuilder: (context, index) {
-                  return Image.asset(
-                    bannerList[index],
-                    fit: BoxFit.cover,
-                  );
-                },
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  PageView.builder(
+                    controller: bannerController,
+                    itemCount: bannerList.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        indexBanner = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          bannerList[index],
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        bannerList.length,
+                        (index) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: index == indexBanner ? 12 : 8,
+                          height: index == indexBanner ? 12 : 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: index == indexBanner
+                                ? Colors.white
+                                : Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -203,7 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              itemData['nama_dokter'] ?? 'Dokter tidak tersedia',
+                              itemData['nama_dokter'] ??
+                                  'Dokter tidak tersedia',
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,

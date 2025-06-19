@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:project_uas_fadila/homepage.dart';
 import 'package:project_uas_fadila/registerscreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,44 +16,66 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool _isPasswordVisible = false;  // Variabel untuk kontrol visibility password
+  bool _isPasswordVisible = false; // Variabel untuk kontrol visibility password
 
   Future<void> login(BuildContext context) async {
-    const String loginUrl = "http://10.0.3.2/backend_project/login.php";
+    const String loginUrl = "http://10.0.2.2/backend_project/login.php";
 
     try {
       final response = await http.post(
         Uri.parse(loginUrl),
-        body: {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
           'email': emailController.text.trim(),
           'password': passwordController.text.trim(),
-        },
+        }),
       );
 
-      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        try {
+          final data = json.decode(response.body);
 
-      if (response.statusCode == 200 && data['message'] == 'Login successful') {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login Successful")),
-        );
-
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+          if (data['message'] == 'Login successful') {
+            var sessionManager = SessionManager();
+            await sessionManager.set("id", data['user_id']);
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setInt('user_id', data['user_id']); // Simpan user_id
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Login Successful")),
+            );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(data['message'] ?? 'Unknown error occurred')),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Invalid response from server")),
+          );
+          print("JSON Decode Error: $e");
+          print("Response body: ${response.body}");
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'])),
+          SnackBar(content: Text("Server Error: ${response.statusCode}")),
         );
+        print("Error response body: ${response.body}");
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("An error occurred: $e")),
       );
+      print("Request error: $e");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,16 +136,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextField(
                       controller: passwordController,
-                      obscureText: !_isPasswordVisible,  // Menggunakan kontrol visibility password
+                      obscureText:
+                          !_isPasswordVisible, // Menggunakan kontrol visibility password
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;  // Mengubah status visibility
+                              _isPasswordVisible =
+                                  !_isPasswordVisible; // Mengubah status visibility
                             });
                           },
                         ),
@@ -191,7 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const RegScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => const RegScreen()),
                             );
                           },
                           child: const Text(
